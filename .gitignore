@@ -6,10 +6,4 @@ UdpGroupServer.java
 UdpGroupClient.java
 demo
 *.log
-*.log
-*.log
-*.log
-*.log
-*.log
-*.log
-*.log
+config.yaml

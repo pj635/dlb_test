@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-//import java.net.UnknownHostException;
-//import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -17,6 +15,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.yaml.snakeyaml.Yaml;
+
+import com.alibaba.fastjson.JSONObject;
 
 import dlb.AesCTR;
 
@@ -44,7 +44,7 @@ public class TestDLB {
 		group = InetAddress.getByName(udpGroupServerIp); // 组播地址
 		socket = new MulticastSocket(udpGroupServerPort);
 		socket.joinGroup(group);// 加入连接
-		byte[] buffer = new byte[8192];
+		byte[] buffer = new byte[110];
 		System.out.println("接收数据包启动！(启动时间: " + new Date() + ")");
 
 		// 建立一个指定缓冲区大小的数据包
@@ -63,6 +63,14 @@ public class TestDLB {
 		// 解密
 		String DeString = AesCTR.getInstance().decrypt(encrypted, keyByte, ivByte);
 		System.out.println("解密后的字串是：" + DeString);
+		
+		// yaml反序列化
+		yaml = new Yaml();
+		Map<String, Object> map = (Map<String, Object>) yaml.load(DeString);
+		JSONObject obj = new JSONObject(map);
+		System.out.println(obj.toString());
+		System.out.println(obj.get("params").getClass());
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -80,42 +88,5 @@ public class TestDLB {
 
 		Assert.assertEquals(responseCode, 200, "The response code should be 200!");
 
-//		InetAddress group = InetAddress.getByName(udpGroupServerIp);// 组播地址
-//		MulticastSocket socket = null;// 创建组播套接字
-//		try {
-//			socket = new MulticastSocket(udpGroupServerPort);
-//			socket.joinGroup(group);// 加入连接
-//			byte[] buffer = new byte[8192];
-//			System.out.println("接收数据包启动！(启动时间: " + new Date() + ")");
-//			while (true) {
-//				// 建立一个指定缓冲区大小的数据包
-//				DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
-//				socket.receive(dp);
-//				byte[] encrypted = dp.getData();
-//				System.out.println("收到的组播数据（加密）（byte[]）：" + Arrays.toString(encrypted));
-//
-//				// 对收到的组播数据进行解密
-//				byte[] keyByte = null;
-//				byte[] ivByte = null;
-//
-//				keyByte = Hex.decodeHex(keyHexStr.toCharArray());
-//				ivByte = Hex.decodeHex(ivHexStr.toCharArray());
-//
-//				// 解密
-//				String DeString = AesCTR.getInstance().decrypt(encrypted, keyByte, ivByte);
-//				System.out.println("解密后的字串是：" + DeString);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (socket != null) {
-//				try {
-//					socket.leaveGroup(group);
-//					socket.close();
-//				} catch (Exception e2) {
-//					System.out.println("leave group or close socket error");
-//				}
-//			}
-//		}
 	}
 }
