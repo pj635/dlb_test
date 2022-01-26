@@ -4,3 +4,12 @@ test-output
 target
 UdpGroupServer.java
 UdpGroupClient.java
+demo
+*.log
+*.log
+*.log
+*.log
+*.log
+*.log
+*.log
+*.log
